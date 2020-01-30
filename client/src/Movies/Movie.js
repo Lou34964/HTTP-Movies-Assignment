@@ -31,18 +31,44 @@ export default class Movie extends React.Component {
     addToSavedList(this.state.movie);
   };
 
+  deleteMovie = e => {
+    e.preventDefault();
+    axios
+      .delete(`http://localhost:5000/api/movies/${this.state.movie.id}`)
+      .then(res => {
+        // you may need to build the array of items here
+        // if the API doesn't return the full array
+        // your new items list would then be passed into
+        // props.updateItems
+        // (refer to todolist logic)
+        this.props.history.push('/');
+      })
+      .catch(err => console.log(err));
+  };
+
   render() {
     if (!this.state.movie) {
       return <div>Loading movie information...</div>;
     }
 
     return (
-      <div className="save-wrapper">
-        <MovieCard movie={this.state.movie} />
-        <div className="save-button" onClick={this.saveMovie}>
-          Save
+      <>
+        <div className="save-wrapper">
+          <MovieCard movie={this.state.movie} />
+          <div className="save-button" onClick={this.saveMovie}>
+            Save
+          </div>
         </div>
-      </div>
+        <button
+          className="update-button"
+          onClick={() =>
+            this.props.history.push(`/update-movie/${this.state.movie.id}`)
+          }
+        >
+          Update
+        </button>
+        <button className="delete-button" onClick={this.deleteMovie}>Delete</button>
+      </>
     );
   }
 }
